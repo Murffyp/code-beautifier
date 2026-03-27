@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Beautifier</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap');
+
+        :root {
+            --bg: #0d0d0f;
+            --surface: #141418;
+            --surface2: #1c1c22;
+            --border: #2a2a35;
+            --accent: #00a2d3;
+            --accent2: #6ca6c1;
+            --text: #00a2d3;
+            --code-text: #e8e8f0;
+            --muted: #6b8ea0;
+            --muted2: #00a2d322;
+            --btn-h: 40px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px;
+            gap: 8px;
+        }
+
+        h1 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+        .shadow { text-shadow: 2px 2px var(--accent2); }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            width: 80vw;
+            max-width: 1200px;
+            gap: 12px;
+        }
+
+        .tabs {
+            display: flex;
+            flex-direction: row;
+            gap: 4px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 4px;
+        }
+
+        .tab {
+            padding: 8px 20px;
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--muted);
+            background: var(--surface);
+            border: 1px solid transparent;
+            user-select: none;
+            transition: all 0.15s;
+        }
+
+        .tab:hover { color: var(--text); }
+
+        .tab.active {
+            color: var(--text);
+            border-color: var(--border);
+            border-bottom-color: var(--bg);
+            background: var(--bg);
+        }
+
+        .panel { display: none; flex-direction: column; gap: 12px; }
+        .panel.active { display: flex; }
+
+        textarea {
+            width: 100%;
+            min-height: 35vh;
+            background: var(--surface2);
+            color: var(--code-text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus { border-color: var(--accent2); }
+
+        .buttons {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            height: calc(var(--btn-h) + 16px);
+        }
+
+        .btn {
+            height: var(--btn-h);
+            background: var(--surface2);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 8px;
+            padding: 0 20px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 2px var(--accent), -2px -2px 2px #777777;
+            transition: box-shadow 0.15s, transform 0.1s;
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 1px 1px 1px var(--accent), -1px -1px 1px #444;
+        }
+
+        .error { color: #ff6b6b; font-family: 'JetBrains Mono', monospace; font-size: 13px; min-height: 20px; }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="container title" style="display:flex;flex-direction:column;align-items:center;">
+        <h1 class="shadow">Code Beautifier</h1>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="json">JSON</div>
+        <div class="tab" data-tab="html">HTML</div>
+        <div class="tab" data-tab="css">CSS</div>
+        <div class="tab" data-tab="js">JS</div>
+        <div class="tab" data-tab="md">Markdown</div>
+    </div>
+
+    <div id="panel-json" class="panel active">
+        <textarea id="input-json" placeholder="Paste JSON here..."></textarea>
+        <div class="buttons">
+            <div class="btn" id="btn-format-json">Format</div>
+            <div class="btn" id="btn-copy-json">Copy</div>
+        </div>
+        <div class="error" id="error-json"></div>
+        <textarea id="output-json" placeholder="Formatted JSON will appear here..." readonly></textarea>
+    </div>
+
+    <div id="panel-html" class="panel">
+        <textarea id="input-html" placeholder="Paste HTML here..."></textarea>
+        <div class="buttons">
+            <div class="btn" id="btn-format-html">Format</div>
+            <div class="btn" id="btn-copy-html">Copy</div>
+        </div>
+        <div class="error" id="error-html"></div>
+        <textarea id="output-html" placeholder="Formatted HTML will appear here..." readonly></textarea>
+    </div>
+
+    <div id="panel-css" class="panel">
+        <textarea id="input-css" placeholder="Paste CSS here..."></textarea>
+        <div class="buttons">
+            <div class="btn" id="btn-format-css">Format</div>
+            <div class="btn" id="btn-copy-css">Copy</div>
+        </div>
+        <div class="error" id="error-css"></div>
+        <textarea id="output-css" placeholder="Formatted CSS will appear here..." readonly></textarea>
+    </div>
+
+    <div id="panel-js" class="panel">
+        <textarea id="input-js" placeholder="Paste JavaScript here..."></textarea>
+        <div class="buttons">
+            <div class="btn" id="btn-format-js">Format</div>
+            <div class="btn" id="btn-copy-js">Copy</div>
+        </div>
+        <div class="error" id="error-js"></div>
+        <textarea id="output-js" placeholder="Formatted JS will appear here..." readonly></textarea>
+    </div>
+
+    <div id="panel-md" class="panel">
+        <textarea id="input-md" placeholder="Paste Markdown here..."></textarea>
+        <div class="buttons">
+            <div class="btn" id="btn-format-md">Format</div>
+            <div class="btn" id="btn-copy-md">Copy</div>
+        </div>
+        <div class="error" id="error-md"></div>
+        <textarea id="output-md" placeholder="Formatted Markdown will appear here..." readonly></textarea>
+    </div>
+</div>
+
+<script>
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    // Copy buttons
+    ['json','html','css','js','md'].forEach(lang => {
+        document.getElementById('btn-copy-' + lang).addEventListener('click', () => {
+            const out = document.getElementById('output-' + lang).value;
+            if (out) navigator.clipboard.writeText(out);
+        });
+    });
+
+    // JSON formatter
+    document.getElementById('btn-format-json').addEventListener('click', () => {
+        const input = document.getElementById('input-json').value;
+        const error = document.getElementById('error-json');
+        const output = document.getElementById('output-json');
+        try {
+            output.value = JSON.stringify(JSON.parse(input), null, 2);
+            error.textContent = '';
+        } catch(e) {
+            error.textContent = 'Error: ' + e.message;
+            output.value = '';
+        }
+    });
+
+    // HTML, CSS, JS, MD formatters — Prettier coming next session!
+    ['html','css','js','md'].forEach(lang => {
+        document.getElementById('btn-format-' + lang).addEventListener('click', () => {
+            document.getElementById('error-' + lang).textContent = 'Formatter coming soon!';
+        });
+    });
+</script>
+</body>
+</html>

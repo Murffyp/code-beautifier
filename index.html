@@ -136,7 +136,7 @@
         <h1 class="shadow">Code Beautifier</h1>
     </div>
 
-    <div class="tabs">
+    <div class="tabs">    <!-- WASNT SURE IF THIS SHOULD BE REMOVED  PRETTY SURE IT SHOUL:DNT AS ITS THE TABS THAT WILL TRIGGER THE JS -->
         <div class="tab active" data-tab="json">JSON</div>
         <div class="tab" data-tab="html">HTML</div>
         <div class="tab" data-tab="css">CSS</div>
@@ -144,57 +144,18 @@
         <div class="tab" data-tab="md">Markdown</div>
     </div>
 
-    <div id="panel-json" class="panel active">
-        <textarea id="input-json" placeholder="Paste JSON here..."></textarea>
+    <div id="panel" class="panel active">
+        <textarea id="input" placeholder="Paste JSON here..."></textarea>
         <div class="buttons">
-			<input type="file" id="file-json" accept=".json" style="display:none">
-            <div class="btn" id="btn-load-json">Load File</div>
-            <div class="btn" id="btn-format-json">Format</div>
-            <div class="btn" id="btn-copy-json">Copy</div>
+			<input type="file" id="file" accept=".json" style="display:none">
+            <div class="btn" id="btn-load">Load File</div>
+            <div class="btn" id="btn-format">Format</div>
+            <div class="btn" id="btn-copy">Copy</div>
         </div>
-        <div class="error" id="error-json"></div>
-        <textarea id="output-json" placeholder="Formatted JSON will appear here..." readonly></textarea>
+        <div class="error" id="error"></div>
+        <textarea id="output" placeholder="Formatted JSON will appear here..." readonly></textarea>
     </div>
 
-    <div id="panel-html" class="panel">
-        <textarea id="input-html" placeholder="Paste HTML here..."></textarea>
-        <div class="buttons">
-            <div class="btn" id="btn-format-html">Format</div>
-            <div class="btn" id="btn-copy-html">Copy</div>
-        </div>
-        <div class="error" id="error-html"></div>
-        <textarea id="output-html" placeholder="Formatted HTML will appear here..." readonly></textarea>
-    </div>
-
-    <div id="panel-css" class="panel">
-        <textarea id="input-css" placeholder="Paste CSS here..."></textarea>
-        <div class="buttons">
-            <div class="btn" id="btn-format-css">Format</div>
-            <div class="btn" id="btn-copy-css">Copy</div>
-        </div>
-        <div class="error" id="error-css"></div>
-        <textarea id="output-css" placeholder="Formatted CSS will appear here..." readonly></textarea>
-    </div>
-
-    <div id="panel-js" class="panel">
-        <textarea id="input-js" placeholder="Paste JavaScript here..."></textarea>
-        <div class="buttons">
-            <div class="btn" id="btn-format-js">Format</div>
-            <div class="btn" id="btn-copy-js">Copy</div>
-        </div>
-        <div class="error" id="error-js"></div>
-        <textarea id="output-js" placeholder="Formatted JS will appear here..." readonly></textarea>
-    </div>
-
-    <div id="panel-md" class="panel">
-        <textarea id="input-md" placeholder="Paste Markdown here..."></textarea>
-        <div class="buttons">
-            <div class="btn" id="btn-format-md">Format</div>
-            <div class="btn" id="btn-copy-md">Copy</div>
-        </div>
-        <div class="error" id="error-md"></div>
-        <textarea id="output-md" placeholder="Formatted Markdown will appear here..." readonly></textarea>
-    </div>
 </div>
 
 <script>

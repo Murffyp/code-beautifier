@@ -160,64 +160,67 @@
 
 <script>
 	
-	document.getElementById('btn-load-json').addEventListener('click', () => {
-        document.getElementById('file-json').click();
+	document.getElementById('btn-load').addEventListener('click', () => {
+        document.getElementById('file').click();
     });
 
-    document.getElementById('file-json').addEventListener('change', (e) => {
+    document.getElementById('file').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (ev) => {
-            document.getElementById('input-json').value = ev.target.result;
+            document.getElementById('input-text').value = ev.target.result;
         };
         reader.readAsText(file);
     });
-    
-    function switchTab(tabName) {
-		const langConfig = {
-    		json: {
-        		inputPlaceholder: 'Paste JSON here...',
-		        outputPlaceholder: 'Formatted JSON will appear here...',
-        		btnLabel: 'Format & Validate',
-		        fileAccept: '.json',
-        		formatter: formatJSON  // function reference
-        		id: 'jsonTab'
-		    },
-    		html: {
-        		inputPlaceholder: 'Paste HTML here...',
-        		outputPlaceholder: 'Formatted HTML will appear here...',
-        		btnLabel: 'Format',
-        		fileAccept: '.html,.htm',
-        		formatter: formatHTML
-        		id: 'htmlTab'
-    		}
-    		css: {
-        		inputPlaceholder: 'Paste CSS here...',
-        		outputPlaceholder: 'Formatted CSS will appear here...',
-        		btnLabel: 'Format',
-        		fileAccept: '.css,.scss',
-        		formatter: formatCSS
-        		id: 'cssTab'
-    		}
-    		js: {
-        		inputPlaceholder: 'Paste HTML here...',
-        		outputPlaceholder: 'Formatted HTML will appear here...',
-        		btnLabel: 'Format',
-        		fileAccept: '.html,.htm',
-        		formatter: formatJS
-        		id: 'jsTab'
-    		}
-    		md: {
-        		inputPlaceholder: 'Paste MD here...',
-        		outputPlaceholder: 'Formatted MD will appear here...',
-        		btnLabel: 'Format',
-        		fileAccept: '.md',
-        		formatter: formatMD
-        		id: 'mdTab'
-    		}
+
+
+
+const langConfig = {
+	json: {
+       	inputPlaceholder: 'Paste JSON here...',
+	    outputPlaceholder: 'Formatted JSON will appear here...',
+       	btnLabel: 'Format & Validate',
+	    fileAccept: '.json',
+       	formatter: formatJSON  // function reference
+       	id: 'jsonTab'
+   },
+    html: {
+    	inputPlaceholder: 'Paste HTML here...',
+   		outputPlaceholder: 'Formatted HTML will appear here...',
+  		btnLabel: 'Format',
+   		fileAccept: '.html,.htm',
+   		formatter: formatHTML
+   		id: 'htmlTab'
+    },
+    css: {
+     	inputPlaceholder: 'Paste CSS here...',
+     	outputPlaceholder: 'Formatted CSS will appear here...',
+     	btnLabel: 'Format',
+     	fileAccept: '.css,.scss',
+     	formatter: formatCSS
+     	id: 'cssTab'
+    },
+	js: {
+   		inputPlaceholder: 'Paste HTML here...',
+   		outputPlaceholder: 'Formatted HTML will appear here...',
+   		btnLabel: 'Format',
+   		fileAccept: '.html,.htm',
+   		formatter: formatJS
+   		id: 'jsTab'
+	},
+	md: {
+   		inputPlaceholder: 'Paste MD here...',
+   		outputPlaceholder: 'Formatted MD will appear here...',
+   		btnLabel: 'Format',
+   		fileAccept: '.md',
+   		formatter: formatMD
+   		id: 'mdTab'
+	}
     		// etc
-		}
+}   
+    function switchTab(tabName) {
+
 		const lastTab = json;
 		const curTab = tabName;
 		const config = langConfig[curTab]
@@ -232,39 +235,22 @@
 		const acceptFile = document.getElementById('file');
 		const btnLabel = document.getElementById('btn-format');
 		
-		if (curTab === jsonTab) {
-			changeActive(lastConfig.id, config.id) ;
-			changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);  // <<<<<<<====== DID JUST USE A REPEATABLE FUCTION ... decided to jsut pass as arguments after considering moiving out thsi actualyl was the cleaner way I THNK
-		}
-		else if (curTab === htmlTab) {
-			changeActive(lastConfig.id, config.id) ;
-			changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
-		}
-		else if (curTab === cssTab) {
-			changeActive(lastConfig.id, config.id) ;
-			changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
-		}
-		else if (curTab === jsTab) {
-			changeActive(lastConfig.id, config.id) ;
-			changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
-		}
-		else if (curTab === mdTab) {
-			changeActive(lastConfig.id, config.id) ;
-			changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
-		}
+		changeActive(lastConfig.id, config.id) ;
+		changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);  // <<<<<<<====== DID JUST USE A REPEATABLE FUCTION ... decided to jsut pass as arguments after considering moiving out thsi actualyl was the cleaner way I THNK
+		lastTab = curTab;
 	}
 
 function changeActive(deactive, activate) {   //pass tab ID
 	// remove from both first
-	document.getElementById('deactivate').classList.remove('active');
-	document.getElementById('activate').classList.remove('active');
+	document.getElementById(deactivate).classList.remove('active');
+	document.getElementById(activate).classList.remove('active');
 }
 
 function changeLanguage(lang, input, output, accept, label) {
-	input.placeholder = congif.inputPlaceholder;
-	output.placeholder = congif.outputPlaceholder;
+	input.placeholder = confif.inputPlaceholder;
+	output.placeholder = config.outputPlaceholder;
 	accept.accept = config.fileAccept;
-	label.text = config.btnLabel;  // <<<======= VERY UNSURE ABOUT .text being correct.....  this is not likely right a guessreally...  *fingers crossed??**
+	label.textContext = config.btnLabel;  // <<<======= VERY UNSURE ABOUT .text being correct.....  this is not likely right a guessreally...  *fingers crossed??**
 }
     // Tab switching
     document.querySelectorAll('.tab').forEach(tab => {

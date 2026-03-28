@@ -136,7 +136,7 @@
         <h1 class="shadow">Code Beautifier</h1>
     </div>
 
-    <div class="tabs">    <!-- WASNT SURE IF THIS SHOULD BE REMOVED  PRETTY SURE IT SHOUL:DNT AS ITS THE TABS THAT WILL TRIGGER THE JS -->
+    <div class="tabs">    
         <div id="jsonTab" class="tab active" data-tab="json">JSON</div>
         <div id="htmlTab" class="tab" data-tab="html">HTML</div>
         <div id="cssTab" class="tab" data-tab="css">CSS</div>
@@ -176,13 +176,14 @@
 
 
 
+
 const langConfig = {
 	json: {
        	inputPlaceholder: 'Paste JSON here...',
 	    outputPlaceholder: 'Formatted JSON will appear here...',
        	btnLabel: 'Format & Validate',
 	    fileAccept: '.json',
-       	formatter: formatJSON  // function reference
+       	formatter: formatJSON,  // function reference
        	id: 'jsonTab'
    },
     html: {
@@ -190,7 +191,7 @@ const langConfig = {
    		outputPlaceholder: 'Formatted HTML will appear here...',
   		btnLabel: 'Format',
    		fileAccept: '.html,.htm',
-   		formatter: formatHTML
+   		formatter: formatHTML,
    		id: 'htmlTab'
     },
     css: {
@@ -198,7 +199,7 @@ const langConfig = {
      	outputPlaceholder: 'Formatted CSS will appear here...',
      	btnLabel: 'Format',
      	fileAccept: '.css,.scss',
-     	formatter: formatCSS
+     	formatter: formatCSS,
      	id: 'cssTab'
     },
 	js: {
@@ -206,7 +207,7 @@ const langConfig = {
    		outputPlaceholder: 'Formatted HTML will appear here...',
    		btnLabel: 'Format',
    		fileAccept: '.html,.htm',
-   		formatter: formatJS
+   		formatter: formatJS,
    		id: 'jsTab'
 	},
 	md: {
@@ -214,14 +215,13 @@ const langConfig = {
    		outputPlaceholder: 'Formatted MD will appear here...',
    		btnLabel: 'Format',
    		fileAccept: '.md',
-   		formatter: formatMD
+   		formatter: formatMD,
    		id: 'mdTab'
 	}
     		// etc
 }   
+let lastTab = 'json';
     function switchTab(tabName) {
-
-		const lastTab = json;
 		const curTab = tabName;
 		const config = langConfig[curTab]
 		const lastConfig = langConfig[lastTab]
@@ -236,21 +236,23 @@ const langConfig = {
 		const btnLabel = document.getElementById('btn-format');
 		
 		changeActive(lastConfig.id, config.id) ;
-		changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);  // <<<<<<<====== DID JUST USE A REPEATABLE FUCTION ... decided to jsut pass as arguments after considering moiving out thsi actualyl was the cleaner way I THNK
+		changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
+		config.formatter();
 		lastTab = curTab;
 	}
 
-function changeActive(deactive, activate) {   //pass tab ID
+function changeActive(deactivate, activate) {   //pass tab ID
 	// remove from both first
 	document.getElementById(deactivate).classList.remove('active');
-	document.getElementById(activate).classList.remove('active');
+	document.getElementById(activate).classList.add('active');
 }
 
 function changeLanguage(lang, input, output, accept, label) {
-	input.placeholder = confif.inputPlaceholder;
+	const config = langConfig[lang];
+	input.placeholder = config.inputPlaceholder;
 	output.placeholder = config.outputPlaceholder;
 	accept.accept = config.fileAccept;
-	label.textContext = config.btnLabel;  // <<<======= VERY UNSURE ABOUT .text being correct.....  this is not likely right a guessreally...  *fingers crossed??**
+	label.textContext = config.btnLabel;
 }
     // Tab switching
     document.querySelectorAll('.tab').forEach(tab => {
@@ -265,8 +267,9 @@ function changeLanguage(lang, input, output, accept, label) {
         if (out) navigator.clipboard.writeText(out);
     });
 
+
     // JSON formatter
-    document.getElementById('btn-format').addEventListener('click', () => {
+    function formatJSON() {
         const input = document.getElementById('input-text').value;
         const error = document.getElementById('error-text');
         const output = document.getElementById('output-text');
@@ -277,7 +280,29 @@ function changeLanguage(lang, input, output, accept, label) {
             error.textContent = 'Error: ' + e.message;
             output.value = '';
         }
-    });
+    }
+
+    // HTML formatter
+    function formatHTML() {
+    }
+    
+    // CSS formatter
+    function formatCSS() {
+    }
+    
+    // JS formatter
+    function formatJS() {
+    }
+    // MD formatter
+    function formatMD() {
+    }
+
+    
+    // format button event listener
+document.getElementById('btn-format').addEventListener('click', () => {
+	const config = langConfig[lastTab];
+    config.formatter();  // but config isn't accessible here...
+});
 //
 //    // HTML, CSS, JS, MD formatters — Prettier coming next session!
 //    ['html','css','js','md'].forEach(lang => {

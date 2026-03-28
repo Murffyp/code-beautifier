@@ -137,23 +137,23 @@
     </div>
 
     <div class="tabs">    <!-- WASNT SURE IF THIS SHOULD BE REMOVED  PRETTY SURE IT SHOUL:DNT AS ITS THE TABS THAT WILL TRIGGER THE JS -->
-        <div class="tab active" data-tab="json">JSON</div>
-        <div class="tab" data-tab="html">HTML</div>
-        <div class="tab" data-tab="css">CSS</div>
-        <div class="tab" data-tab="js">JS</div>
-        <div class="tab" data-tab="md">Markdown</div>
+        <div id="jsonTab" class="tab active" data-tab="json">JSON</div>
+        <div id="htmlTab" class="tab" data-tab="html">HTML</div>
+        <div id="cssTab" class="tab" data-tab="css">CSS</div>
+        <div id="jsTab" class="tab" data-tab="js">JS</div>
+        <div id="mdTab" class="tab" data-tab="md">Markdown</div>
     </div>
 
     <div id="panel" class="panel active">
-        <textarea id="input" placeholder="Paste JSON here..."></textarea>
+        <textarea id="input-text" placeholder="Paste JSON here..."></textarea>
         <div class="buttons">
 			<input type="file" id="file" accept=".json" style="display:none">
             <div class="btn" id="btn-load">Load File</div>
             <div class="btn" id="btn-format">Format</div>
             <div class="btn" id="btn-copy">Copy</div>
         </div>
-        <div class="error" id="error"></div>
-        <textarea id="output" placeholder="Formatted JSON will appear here..." readonly></textarea>
+        <div class="error" id="error-text"></div>
+        <textarea id="output-text" placeholder="Formatted JSON will appear here..." readonly></textarea>
     </div>
 
 </div>
@@ -173,29 +173,117 @@
         };
         reader.readAsText(file);
     });
+    
+    function switchTab(tabName) {
+		const langConfig = {
+    		json: {
+        		inputPlaceholder: 'Paste JSON here...',
+		        outputPlaceholder: 'Formatted JSON will appear here...',
+        		btnLabel: 'Format & Validate',
+		        fileAccept: '.json',
+        		formatter: formatJSON  // function reference
+        		id: 'jsonTab'
+		    },
+    		html: {
+        		inputPlaceholder: 'Paste HTML here...',
+        		outputPlaceholder: 'Formatted HTML will appear here...',
+        		btnLabel: 'Format',
+        		fileAccept: '.html,.htm',
+        		formatter: formatHTML
+        		id: 'htmlTab'
+    		}
+    		css: {
+        		inputPlaceholder: 'Paste CSS here...',
+        		outputPlaceholder: 'Formatted CSS will appear here...',
+        		btnLabel: 'Format',
+        		fileAccept: '.css,.scss',
+        		formatter: formatCSS
+        		id: 'cssTab'
+    		}
+    		js: {
+        		inputPlaceholder: 'Paste HTML here...',
+        		outputPlaceholder: 'Formatted HTML will appear here...',
+        		btnLabel: 'Format',
+        		fileAccept: '.html,.htm',
+        		formatter: formatJS
+        		id: 'jsTab'
+    		}
+    		md: {
+        		inputPlaceholder: 'Paste MD here...',
+        		outputPlaceholder: 'Formatted MD will appear here...',
+        		btnLabel: 'Format',
+        		fileAccept: '.md',
+        		formatter: formatMD
+        		id: 'mdTab'
+    		}
+    		// etc
+		}
+		const lastTab = json;
+		const curTab = tabName;
+		const config = langConfig[curTab]
+		const lastConfig = langConfig[lastTab]
+		const jsonTab = document.getElementById('jsonTab');
+		const htmlTab = document.getElementById('htmlTab');
+		const cssTab = document.getElementById('cssTab');
+		const jsTab = document.getElementById('jsTab');
+		const mdTab = document.getElementById('md');
+		const inputText = document.getElementById('input-text');
+		const outputText = document.getElementById('output-text');
+		const acceptFile = document.getElementById('file');
+		const btnLabel = document.getElementById('btn-format');
+		
+		if (curTab === jsonTab) {
+			changeActive(lastConfig.id, config.id) ;
+			changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);  // <<<<<<<====== DID JUST USE A REPEATABLE FUCTION ... decided to jsut pass as arguments after considering moiving out thsi actualyl was the cleaner way I THNK
+		}
+		else if (curTab === htmlTab) {
+			changeActive(lastConfig.id, config.id) ;
+			changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
+		}
+		else if (curTab === cssTab) {
+			changeActive(lastConfig.id, config.id) ;
+			changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
+		}
+		else if (curTab === jsTab) {
+			changeActive(lastConfig.id, config.id) ;
+			changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
+		}
+		else if (curTab === mdTab) {
+			changeActive(lastConfig.id, config.id) ;
+			changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
+		}
+	}
+
+function changeActive(deactive, activate) {   //pass tab ID
+	// remove from both first
+	document.getElementById('deactivate').classList.remove('active');
+	document.getElementById('activate').classList.remove('active');
+}
+
+function changeLanguage(lang, input, output, accept, label) {
+	input.placeholder = congif.inputPlaceholder;
+	output.placeholder = congif.outputPlaceholder;
+	accept.accept = config.fileAccept;
+	label.text = config.btnLabel;  // <<<======= VERY UNSURE ABOUT .text being correct.....  this is not likely right a guessreally...  *fingers crossed??**
+}
     // Tab switching
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            tab.classList.add('active');
-            document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+            switchTab(tab.dataset.tab)
         });
     });
 
     // Copy buttons
-    ['json','html','css','js','md'].forEach(lang => {
-        document.getElementById('btn-copy-' + lang).addEventListener('click', () => {
-            const out = document.getElementById('output-' + lang).value;
-            if (out) navigator.clipboard.writeText(out);
-        });
+    document.getElementById('btn-copy').addEventListener('click', () => {
+        const out = document.getElementById('output-text').value;
+        if (out) navigator.clipboard.writeText(out);
     });
 
     // JSON formatter
-    document.getElementById('btn-format-json').addEventListener('click', () => {
-        const input = document.getElementById('input-json').value;
-        const error = document.getElementById('error-json');
-        const output = document.getElementById('output-json');
+    document.getElementById('btn-format').addEventListener('click', () => {
+        const input = document.getElementById('input-text').value;
+        const error = document.getElementById('error-text');
+        const output = document.getElementById('output-text');
         try {
             output.value = JSON.stringify(JSON.parse(input), null, 2);
             error.textContent = '';
@@ -204,13 +292,14 @@
             output.value = '';
         }
     });
-
-    // HTML, CSS, JS, MD formatters — Prettier coming next session!
-    ['html','css','js','md'].forEach(lang => {
-        document.getElementById('btn-format-' + lang).addEventListener('click', () => {
-            document.getElementById('error-' + lang).textContent = 'Formatter coming soon!';
-        });
-    });
+//
+//    // HTML, CSS, JS, MD formatters — Prettier coming next session!
+//    ['html','css','js','md'].forEach(lang => {
+//        document.getElementById('btn-format-' + lang).addEventListener('click', () => {
+//            document.getElementById('error-' + lang).textContent = 'Formatter coming soon!';
+//        });
+//    });
+ 
 </script>
 </body>
 </html>

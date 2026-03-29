@@ -148,6 +148,7 @@
         <textarea id="input-text" placeholder="Paste JSON here..."></textarea>
         <div class="buttons">
 			<input type="file" id="file" accept=".json" style="display:none">
+            <div class="btn" id="btn-clear">Clear</div>
             <div class="btn" id="btn-load">Load File</div>
             <div class="btn" id="btn-format">Format</div>
             <div class="btn" id="btn-copy">Copy</div>
@@ -261,24 +262,42 @@ function changeLanguage(lang, input, output, accept, label) {
     });
 
     // Copy buttons
+    document.getElementById('btn-clear').addEventListener('click', () => {
+        let clearInput = document.getElementById('input-text');
+        clearInput.value = ''
+    });
+
+    // Copy buttons
     document.getElementById('btn-copy').addEventListener('click', () => {
         const out = document.getElementById('output-text').value;
         if (out) navigator.clipboard.writeText(out);
     });
+    
+    // Format button
+    document.getElementById('btn-format').addEventListener('click', () => {
+        const config = langConfig[lastTab]
+        config.formatter()
+    });
 
 
     // JSON formatter
-    function formatJSON() {
+    function formatJSON() {  ///CURRENTLY doesnt work as expected
         const input = document.getElementById('input-text').value;
         const error = document.getElementById('error-text');
         const output = document.getElementById('output-text');
-        try {
-            output.value = JSON.stringify(JSON.parse(input), null, 2);
-            error.textContent = '';
-        } catch(e) {
-            error.textContent = 'Error: ' + e.message;
-            output.value = '';
-        }
+		if (input === '') {
+			console.log('ERROR INPUT EMPTY');
+			error.textContent = 'Error: Please Enter JSON to Beautify';
+		}
+		else {	    
+            try {
+                output.value = JSON.stringify(JSON.parse(input), null, 2);
+                error.textContent = '';
+            } catch(e) {
+                error.textContent = 'Error: ' + e.message;
+                output.value = '';
+            }
+		}
     }
 
     // HTML formatter
@@ -298,10 +317,7 @@ function changeLanguage(lang, input, output, accept, label) {
 
     
     // format button event listener
-document.getElementById('btn-format').addEventListener('click', () => {
-	const config = langConfig[lastTab];
-    config.formatter();  // but config isn't accessible here...
-});
+
 //
 //    // HTML, CSS, JS, MD formatters — Prettier coming next session!
 //    ['html','css','js','md'].forEach(lang => {

@@ -160,6 +160,15 @@
 </div>
 
 <script>
+
+//tab caching variables
+const tabCache = {
+    json: '',
+    html: '',
+    css: '',
+    js: '',
+    md: ''
+};
 	
 	document.getElementById('btn-load').addEventListener('click', () => {
         document.getElementById('file').click();
@@ -235,9 +244,17 @@ let lastTab = 'json';
 		const outputText = document.getElementById('output-text');
 		const acceptFile = document.getElementById('file');
 		const btnLabel = document.getElementById('btn-format');
+		tabCache[lastTab] = inputText.value;
+		
 		
 		changeActive(lastConfig.id, config.id) ;
 		changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
+		if (tabCache[tabName] === '') {
+			inputText.value = '';
+		}
+		else {
+			inputText.value = tabCache[tabName];
+		}
 		lastTab = curTab;
 	}
 

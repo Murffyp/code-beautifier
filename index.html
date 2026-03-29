@@ -128,6 +128,10 @@
         }
 
         .error { color: #ff6b6b; font-family: 'JetBrains Mono', monospace; font-size: 13px; min-height: 20px; }
+        
+        textarea::selection {
+            background: #ff000066;  /* red highlight with transparency */
+        }
     </style>
 </head>
 <body>
@@ -169,6 +173,7 @@ const tabCache = {
     js: '',
     md: ''
 };
+let curError = '';
 	
 	document.getElementById('btn-load').addEventListener('click', () => {
         document.getElementById('file').click();
@@ -278,10 +283,12 @@ function changeLanguage(lang, input, output, accept, label) {
         });
     });
 
-    // Copy buttons
+    // Clear Input Button
     document.getElementById('btn-clear').addEventListener('click', () => {
+        const error = document.getElementById('error-text');
         let clearInput = document.getElementById('input-text');
-        clearInput.value = ''
+        clearInput.value = '';
+        error.textContent = '';
     });
 
     // Copy buttons
@@ -289,6 +296,20 @@ function changeLanguage(lang, input, output, accept, label) {
         const out = document.getElementById('output-text').value;
         if (out) navigator.clipboard.writeText(out);
     });
+    
+function highlightErrorLine(lineNum) {
+    const inputText = document.getElementById('input-text');
+    if (!lineNum) return;
+    const lines = inputText.value.split('\n');
+    if (lineNum > lines.length) return;
+    let start = 0;
+    for (let i = 0; i < lineNum - 1; i++) {
+        start += lines[i].length + 1;
+    }
+    const end = start + lines[lineNum - 1].length;
+    inputText.setSelectionRange(start, end);
+    inputText.focus();
+}    
     
     // Format button
     document.getElementById('btn-format').addEventListener('click', () => {
@@ -302,6 +323,7 @@ function changeLanguage(lang, input, output, accept, label) {
         const input = document.getElementById('input-text').value;
         const error = document.getElementById('error-text');
         const output = document.getElementById('output-text');
+        
 		if (input === '') {
 			console.log('ERROR INPUT EMPTY');
 			error.textContent = 'Error: Please Enter JSON to Beautify';
@@ -311,8 +333,11 @@ function changeLanguage(lang, input, output, accept, label) {
                 output.value = JSON.stringify(JSON.parse(input), null, 2);
                 error.textContent = '';
             } catch(e) {
-                error.textContent = 'Error: ' + e.message;
+                error.textContent = 'Error: ' + e.message + '.';
+                error.innerText += '\nLine with error has been selected';
                 output.value = '';
+                const lineMatch = e.message.match(/line (\d+)/);
+                if (lineMatch) highlightErrorLine(parseInt(lineMatch[1]));
             }
 		}
     }

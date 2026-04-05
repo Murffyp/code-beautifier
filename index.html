@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Beautifier</title>
+    <!-- JS for Pretier's CSS Parser -->
+    <script src="https://unpkg.com/prettier@2/standalone.js"></script>
+    <script src="https://unpkg.com/prettier@2/parser-postcss.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap');
 
@@ -127,7 +130,13 @@
             box-shadow: 1px 1px 1px var(--accent), -1px -1px 1px #444;
         }
 
-        .error { color: #ff6b6b; font-family: 'JetBrains Mono', monospace; font-size: 13px; min-height: 20px; }
+        .error { 
+            color: #ff6b6b; 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 13px; 
+            min-height: 20px; 
+            white-space: pre;
+        }
         
         textarea::selection {
             background: #ff000066;  /* red highlight with transparency */
@@ -319,7 +328,7 @@ function highlightErrorLine(lineNum) {
 
 
     // JSON formatter
-    function formatJSON() {  ///CURRENTLY doesnt work as expected
+    function formatJSON() {
         const input = document.getElementById('input-text').value;
         const error = document.getElementById('error-text');
         const output = document.getElementById('output-text');
@@ -348,6 +357,26 @@ function highlightErrorLine(lineNum) {
     
     // CSS formatter
     function formatCSS() {
+        const input = document.getElementById('input-text').value;
+        const error = document.getElementById('error-text');
+        const output = document.getElementById('output-text');
+        
+		if (input === '') {
+			console.log('ERROR INPUT EMPTY');
+			error.textContent = 'Error: Please Enter JSON to Beautify';
+		}
+		else {	    
+            try {
+                output.value = prettier.format(input, { parser: "css",  plugins: [prettierPlugins.postcss] });
+                error.textContent = '';
+            } catch(e) {
+                error.textContent = 'Error: ' + e.message + '.';
+                error.innerText += '\nLine with error has been selected';
+                output.value = '';
+                const lineMatch = e.message.match(/line (\d+)/);
+                if (lineMatch) highlightErrorLine(parseInt(lineMatch[1]));
+            }
+		}
     }
     
     // JS formatter

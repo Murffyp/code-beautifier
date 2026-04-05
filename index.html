@@ -46,15 +46,15 @@
             flex-direction: column;
             width: 80vw;
             max-width: 1200px;
-            gap: 12px;
+/*            gap: 12px;*/
         }
 
         .tabs {
             display: flex;
             flex-direction: row;
             gap: 4px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 4px;
+/*            border-bottom: 1px solid var(--border);  */
+/*            padding-bottom: 4px;  */
         }
 
         .tab {
@@ -76,10 +76,14 @@
             color: var(--text);
             border-color: var(--border);
             border-bottom-color: var(--bg);
-            background: var(--bg);
+            background: var(--surface2);
         }
 
-        .panel { display: none; flex-direction: column; gap: 12px; }
+        .panel { 
+            display: none; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
         .panel.active { display: flex; }
 
         textarea {
@@ -105,6 +109,7 @@
             align-items: center;
             gap: 12px;
             height: calc(var(--btn-h) + 16px);
+            margin-top: 12px;
         }
 
         .btn {

@@ -138,6 +138,7 @@
             white-space: pre;
         }
         
+
         textarea::selection {
             background: #ff000066;  /* red highlight with transparency */
         }
@@ -332,7 +333,7 @@ function highlightErrorLine(lineNum) {
         const input = document.getElementById('input-text').value;
         const error = document.getElementById('error-text');
         const output = document.getElementById('output-text');
-        
+        error.textContent = '';
 		if (input === '') {
 			console.log('ERROR INPUT EMPTY');
 			error.textContent = 'Error: Please Enter JSON to Beautify';

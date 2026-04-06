@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/prettier@2/standalone.js"></script>
     <script src="https://unpkg.com/prettier@2/parser-postcss.js"></script>\
     <script src="https://unpkg.com/prettier@2/parser-babel.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap');
 
@@ -189,6 +190,7 @@ const tabCache = {
     js: '',
     md: ''
 };
+let curTab = '';
 let curError = '';
 	
 	document.getElementById('btn-load').addEventListener('click', () => {
@@ -215,7 +217,9 @@ const langConfig = {
        	btnLabel: 'Format & Validate',
 	    fileAccept: '.json',
        	formatter: formatJSON,  // function reference
-       	id: 'jsonTab'
+       	id: 'jsonTab',
+        blankError: 'Error: Please Enter JSON to Beautify'
+        
    },
     html: {
     	inputPlaceholder: 'Paste HTML here...',
@@ -223,7 +227,8 @@ const langConfig = {
   		btnLabel: 'Format',
    		fileAccept: '.html,.htm',
    		formatter: formatHTML,
-   		id: 'htmlTab'
+   		id: 'htmlTab',
+        blankError: 'Error: Please Enter HTML to Beautify'
     },
     css: {
      	inputPlaceholder: 'Paste CSS here...',
@@ -231,15 +236,17 @@ const langConfig = {
      	btnLabel: 'Format',
      	fileAccept: '.css,.scss',
      	formatter: formatCSS,
-     	id: 'cssTab'
+     	id: 'cssTab',
+        blankError: 'Error: Please Enter CSS to Beautify'
     },
 	js: {
-   		inputPlaceholder: 'Paste HTML here...',
-   		outputPlaceholder: 'Formatted HTML will appear here...',
+   		inputPlaceholder: 'Paste JavaScript here...',
+   		outputPlaceholder: 'Formatted JavaScript will appear here...',
    		btnLabel: 'Format',
-   		fileAccept: '.html,.htm',
+   		fileAccept: '.js',
    		formatter: formatJS,
-   		id: 'jsTab'
+   		id: 'jsTab',
+        blankError: 'Error: Please Enter JavsScript to Beautify'
 	},
 	md: {
    		inputPlaceholder: 'Paste MD here...',
@@ -247,13 +254,14 @@ const langConfig = {
    		btnLabel: 'Format',
    		fileAccept: '.md',
    		formatter: formatMD,
-   		id: 'mdTab'
+   		id: 'mdTab',
+        blankError: 'Error: Please Enter MarkDown to Beautify'
 	}
     		// etc
 }   
 let lastTab = 'json';
     function switchTab(tabName) {
-		const curTab = tabName;
+		curTab = tabName;
 		const config = langConfig[curTab]
 		const lastConfig = langConfig[lastTab]
 		const jsonTab = document.getElementById('jsonTab');
@@ -265,8 +273,10 @@ let lastTab = 'json';
 		const outputText = document.getElementById('output-text');
 		const acceptFile = document.getElementById('file');
 		const btnLabel = document.getElementById('btn-format');
+        const error = document.getElementById('error-text');
 		tabCache[lastTab] = inputText.value;
-		
+		error.textContent = '';
+        console.log('curTab SWITCH', curTab);
 		
 		changeActive(lastConfig.id, config.id) ;
 		changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
@@ -339,10 +349,17 @@ function highlightErrorLine(lineNum) {
         const input = document.getElementById('input-text').value;
         const error = document.getElementById('error-text');
         const output = document.getElementById('output-text');
+        let config = '';
+        if (curTab === '') {
+            config = langConfig[lastTab];
+        }
+        else {
+            config = langConfig[curTab];
+        }
         error.textContent = '';
 		if (input === '') {
 			console.log('ERROR INPUT EMPTY');
-			error.textContent = 'Error: Please Enter JSON to Beautify';
+			error.textContent = config.blankError;
 		}
 		else {	    
             try {
@@ -367,10 +384,11 @@ function highlightErrorLine(lineNum) {
         const input = document.getElementById('input-text').value;
         const error = document.getElementById('error-text');
         const output = document.getElementById('output-text');
+        const config = langConfig[curTab];
         
 		if (input === '') {
 			console.log('ERROR INPUT EMPTY');
-			error.textContent = 'Error: Please Enter JSON to Beautify';
+			error.textContent = config.blankError;
 		}
 		else {	    
             try {
@@ -386,24 +404,24 @@ function highlightErrorLine(lineNum) {
     
     // JS formatter
     function formatJS() {
+        console.log('curTab', curTab);
         const input = document.getElementById('input-text').value;
         const error = document.getElementById('error-text');
         const output = document.getElementById('output-text');
+        const config = langConfig[curTab];
         
 		if (input === '') {
 			console.log('ERROR INPUT EMPTY');
-			error.textContent = 'Error: Please Enter JSON to Beautify';
+			error.textContent = config.blankError;
 		}
 		else {	    
             try {
-                output.value = prettier.format(input, { parser: "css",  plugins: [prettierPlugins.postcss] });
+                output.value = prettier.format(input, { parser: "babel",  plugins: [prettierPlugins.babel] });
                 error.textContent = '';
             } catch(e) {
                 error.textContent = 'Error: ' + e.message + '.';
                 error.innerText += '\nLine with error has been selected';
                 output.value = '';
-                const lineMatch = e.message.match(/line (\d+)/);
-                if (lineMatch) highlightErrorLine(parseInt(lineMatch[1]));
             }
 		}
     }

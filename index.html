@@ -237,7 +237,7 @@ const langConfig = {
    		inputPlaceholder: 'Paste HTML here...',
    		outputPlaceholder: 'Formatted HTML will appear here...',
    		btnLabel: 'Format',
-   		fileAccept: '.js',
+   		fileAccept: '.html,.htm',
    		formatter: formatJS,
    		id: 'jsTab'
 	},
@@ -386,28 +386,7 @@ function highlightErrorLine(lineNum) {
     
     // JS formatter
     function formatJS() {
-        const input = document.getElementById('input-text').value;
-        const error = document.getElementById('error-text');
-        const output = document.getElementById('output-text');
-        
-		if (input === '') {
-			console.log('ERROR INPUT EMPTY');
-			error.textContent = 'Error: Please Enter JSON to Beautify';
-		}
-		else {	    
-            try {
-                output.value = prettier.format(input, { parser: "babel",  plugins: [prettierPlugins.postcss] });
-                error.textContent = '';
-            } catch(e) {
-                error.textContent = 'Error: ' + e.message + '.';
-                error.innerText += '\nLine with error has been selected';
-                output.value = '';
-                //const lineMatch = e.message.match(/line (\d+)/);
-                //if (lineMatch) highlightErrorLine(parseInt(lineMatch[1]));
-            }
-		}
     }
-
     // MD formatter
     function formatMD() {
     }

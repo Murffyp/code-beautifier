@@ -395,6 +395,11 @@ function highlightErrorLine(lineNum) {
             } catch(e) {
                 error.textContent = 'Error: ' + e.message + '.';
                 output.value = '';
+                const lineMatch = e.message.match(/\>\s(\d+)(?=\s\|)/);
+                if (lineMatch) highlightErrorLine(parseInt(lineMatch[1]));
+                console.log('HTML lineMatch', lineMatch);
+                console.log('HTML lineMatch[0]', lineMatch[0]);
+                console.log('HTML lineMatch[1]', lineMatch[1]);
             }
 		}
     }

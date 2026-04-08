@@ -278,7 +278,7 @@ let lastTab = 'json';
 		tabCache[lastTab] = inputText.value;
 		error.textContent = '';
         console.log('curTab SWITCH', curTab);
-		
+		outputText.value = '';
 		changeActive(lastConfig.id, config.id) ;
 		changeLanguage(curTab, inputText, outputText, acceptFile, btnLabel);
 		if (tabCache[tabName] === '') {

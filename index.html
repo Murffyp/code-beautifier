@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/prettier@2/standalone.js"></script>
     <script src="https://unpkg.com/prettier@2/parser-postcss.js"></script>\
     <script src="https://unpkg.com/prettier@2/parser-babel.js"></script>
+    <script src="https://unpkg.com/prettier@2.8.8/parser-html.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap');
@@ -345,7 +346,7 @@ function highlightErrorLine(lineNum) {
 
 
     // JSON formatter
-    function formatJSON() {
+    function formatJSON() {         ///////ASK CLAUDE PRETIER FOR JSON????  WHY NOT?
         const input = document.getElementById('input-text').value;
         const error = document.getElementById('error-text');
         const output = document.getElementById('output-text');
@@ -377,6 +378,25 @@ function highlightErrorLine(lineNum) {
 
     // HTML formatter
     function formatHTML() {
+        console.log('curTab', curTab);
+        const input = document.getElementById('input-text').value;
+        const error = document.getElementById('error-text');
+        const output = document.getElementById('output-text');
+        const config = langConfig[curTab];
+        
+		if (input === '') {
+			console.log('ERROR INPUT EMPTY');
+			error.textContent = config.blankError;
+		}
+		else {	    
+            try {
+                output.value = prettier.format(input, { parser: "html",  plugins: [prettierPlugins.html] });
+                error.textContent = '';
+            } catch(e) {
+                error.textContent = 'Error: ' + e.message + '.';
+                output.value = '';
+            }
+		}
     }
     
     // CSS formatter
@@ -420,7 +440,6 @@ function highlightErrorLine(lineNum) {
                 error.textContent = '';
             } catch(e) {
                 error.textContent = 'Error: ' + e.message + '.';
-                error.innerText += '\nLine with error has been selected';
                 output.value = '';
             }
 		}
@@ -443,3 +462,5 @@ function highlightErrorLine(lineNum) {
 </script>
 </body>
 </html>
+    parser: 'html',
+    plugins: prettierPluginsHtml
